@@ -13,7 +13,8 @@ if (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 }
 
 $scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Path
-$regFilePath = Join-Path $scriptPath "Registry\GhostMode.reg"
+$codexPath = $scriptPath # Assuming Install.ps1 is in the root of Codex directory
+$regFilePath = Join-Path $scriptPath "Registry\Codex.reg"
 
 Write-Host "`nInstalling Codex..." -ForegroundColor Green
 
@@ -27,8 +28,26 @@ try {
     } else {
         Write-Host "⚠ Icon script not found, using default icons" -ForegroundColor Yellow
     }
+
+    # Modify and import registry file
+    $originalRegFilePath = Join-Path $scriptPath "Registry\Codex.reg"
+    $modifiedRegFilePath = Join-Path $scriptPath "Registry\Codex_mod.reg"
+    $placeholderPath = "C:\\Users\\Marek\\Plexus Codex\\Codex" # Double backslashes for regex and PowerShell string
     
-    # Import registry file
+    if (Test-Path $originalRegFilePath) {
+        Write-Host "Modifying registry file for current installation path..." -ForegroundColor Cyan
+        $regContent = Get-Content $originalRegFilePath -Raw
+        # Escape $codexPath for regex replacement (especially backslashes)
+        $escapedCodexPath = ($codexPath -replace '\', '\\')
+        $regContent = $regContent -replace [regex]::Escape($placeholderPath), $escapedCodexPath
+        Set-Content -Path $modifiedRegFilePath -Value $regContent -Encoding UTF8
+        $regFilePath = $modifiedRegFilePath # Update regFilePath to use the modified file
+        Write-Host "✓ Registry file paths updated to: $codexPath" -ForegroundColor Green
+    } else {
+        Write-Host "✗ Original registry file not found at: $originalRegFilePath" -ForegroundColor Red
+        exit
+    }
+
     if (Test-Path $regFilePath) {
         Start-Process "regedit.exe" -ArgumentList "/s", "`"$regFilePath`"" -Wait
         Write-Host "✓ Registry entries imported successfully" -ForegroundColor Green
@@ -64,9 +83,18 @@ try {
     Write-Host "• Network Tools (ping tests)" -ForegroundColor White
     Write-Host "• System Cleanup (temp files, memory reduction)" -ForegroundColor White
     Write-Host "• Universal RoboCopy/RoboPaste" -ForegroundColor White
+
+    Write-Host "
+💡 For future installations or updates, consider using the advanced installer:" -ForegroundColor Yellow
+    Write-Host "   '$scriptPath\Scripts\Install-Codex.ps1'" -ForegroundColor White
+    Write-Host "   It offers more features like automatic downloads and system-wide installation." -ForegroundColor White
     
 } catch {
     Write-Host "✗ Installation failed: $($_.Exception.Message)" -ForegroundColor Red
+}
+
+if (Test-Path $modifiedRegFilePath) {
+    Remove-Item $modifiedRegFilePath -Force
 }
 
 Write-Host "`nPress any key to exit..." -ForegroundColor Yellow

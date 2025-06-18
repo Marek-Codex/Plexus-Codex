@@ -19,6 +19,14 @@ Write-Host "=== Plexus Codex One-Click Installer ===" -ForegroundColor Cyan
 Write-Host "🎯 The ultimate Windows context menu system" -ForegroundColor White
 Write-Host ""
 
+# Debug: Show parameter values
+Write-Host "DEBUG: Parameter values received:" -ForegroundColor Magenta
+Write-Host "  InstallPath: '$InstallPath'" -ForegroundColor Gray
+Write-Host "  UserInstall: $UserInstall" -ForegroundColor Gray
+Write-Host "  GitHubRepo: '$GitHubRepo'" -ForegroundColor Gray
+Write-Host "  isAdmin: $isAdmin" -ForegroundColor Gray
+Write-Host ""
+
 # Determine best installation path
 if (-not $InstallPath) {
     if ($UserInstall -or -not $isAdmin) {

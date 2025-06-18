@@ -49,9 +49,9 @@ function Test-CodexInstalled {
 function Find-CodexInstallation {
     $commonPaths = @(
         "$env:ProgramData\Plexus\Codex",
-        "$env:LOCALAPPDATA\Plexus\Codex",
-        "C:\Users\Marek\Plexus Codex\Codex",
-        "$env:USERPROFILE\Plexus Codex\Codex"
+        "$env:LOCALAPPDATA\Plexus\Codex"
+        # User-specific paths like "$env:USERPROFILE\Plexus Codex\Codex" were removed
+        # and "C:\Users\Marek\Plexus Codex\Codex" was removed
     )
     
     foreach ($path in $commonPaths) {
@@ -71,23 +71,25 @@ function Install-Codex {
     
     # Download and execute the main installer
     try {
-        $installerUrl = "$GitHubRepo/Install.ps1"
+        $installerUrl = "$GitHubRepo/Scripts/Install-Codex.ps1" # Changed to new installer
         Write-Host "Downloading installer from: $installerUrl" -ForegroundColor Gray
         
         $installerScript = Invoke-RestMethod -Uri $installerUrl -ErrorAction Stop
         
         # Prepare installer arguments
-        $installerArgs = @()
+        $installerArgs = @("-GitHubRepo `"$GitHubRepo`"") # Always pass the repo
         if ($InstallPath) { $installerArgs += "-InstallPath `"$InstallPath`"" }
         if ($UserInstall) { $installerArgs += "-UserInstall" }
+        # Note: -Force is handled by Codex-Manager.ps1 before calling Install-Codex
+        # Scripts/Install-Codex.ps1 does not currently have a -Force for re-installation.
         
         # Execute installer
-        $installerCommand = $installerScript
-        if ($installerArgs.Count -gt 0) {
-            $installerCommand += " " + ($installerArgs -join " ")
-        }
-        
-        Invoke-Expression $installerCommand
+        # We need to invoke the script content directly, not as a command string,
+        # to correctly pass complex arguments and avoid issues with Invoke-Expression.
+        # Create a temporary script block
+        $scriptBlock = [scriptblock]::Create($installerScript)
+        # Invoke with arguments
+        Invoke-Command -ScriptBlock $scriptBlock -ArgumentList $installerArgs
         
         Write-Host ""
         Write-Host "✅ Codex installation completed!" -ForegroundColor Green

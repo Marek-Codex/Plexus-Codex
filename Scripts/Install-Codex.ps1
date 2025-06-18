@@ -32,20 +32,24 @@ if (-not $InstallPath) {
         Write-Host "📁 System-wide installation: $InstallPath\Codex" -ForegroundColor Cyan
     }
 }
+else {
+    # Custom installation path provided
+    $InstallPath = $InstallPath.TrimEnd('\')
+    Write-Host "📁 Custom installation path: $InstallPath\Codex" -ForegroundColor Cyan
+}
+
 
 if (-not $isAdmin -and -not $Portable -and -not $UserInstall) {
     Write-Host "⚠️  Administrator privileges recommended for system-wide installation" -ForegroundColor Yellow
     Write-Host "   Options:" -ForegroundColor Gray
     Write-Host "   • Re-run as Administrator (recommended)" -ForegroundColor Gray
     Write-Host "   • Add -UserInstall for user-only installation" -ForegroundColor Gray
-    Write-Host "   • Add -Portable for no registry changes" -ForegroundColor Gray
-
-    $choice = Read-Host "`nContinue with user installation? (Y/N)"
+    Write-Host "   • Add -Portable for no registry changes" -ForegroundColor Gray    $choice = Read-Host "`nContinue with user installation? (Y/N)"
     if ($choice.ToUpper() -ne "Y") {
         exit 1
     }
     $UserInstall = $true
-    $InstallPath = "$env:LOCALAPPDATA\Plexus\Codex"
+    $InstallPath = "$env:LOCALAPPDATA\Plexus"
 }
 
 # Create installation directory

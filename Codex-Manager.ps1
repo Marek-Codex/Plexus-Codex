@@ -74,20 +74,18 @@ function Install-Codex {
         $installerUrl = "$GitHubRepo/Scripts/Install-Codex.ps1" # Changed to new installer
         Write-Host "Downloading installer from: $installerUrl" -ForegroundColor Gray        $installerScript = Invoke-RestMethod -Uri $installerUrl -ErrorAction Stop
         
-        # Create a temporary file for the installer script
-        $tempScriptPath = [System.IO.Path]::GetTempFileName() + ".ps1"
-        Set-Content -Path $tempScriptPath -Value $installerScript
+        # Pass parameters via environment variables (more reliable for downloaded scripts)
+        $env:CODEX_GITHUB_REPO = $GitHubRepo
+        if ($InstallPath) { $env:CODEX_INSTALL_PATH = $InstallPath }
+        if ($UserInstall) { $env:CODEX_USER_INSTALL = "true" }
         
-        # Prepare installer arguments
-        $args = @("-GitHubRepo", "`"$GitHubRepo`"")
-        if ($InstallPath) { $args += @("-InstallPath", "`"$InstallPath`"") }
-        if ($UserInstall) { $args += "-UserInstall" }
+        # Execute installer
+        Invoke-Expression $installerScript
         
-        # Execute installer with proper parameter passing
-        & $tempScriptPath @args
-        
-        # Clean up temporary file
-        Remove-Item -Path $tempScriptPath -Force -ErrorAction SilentlyContinue
+        # Clean up environment variables
+        Remove-Item Env:CODEX_GITHUB_REPO -ErrorAction SilentlyContinue
+        Remove-Item Env:CODEX_INSTALL_PATH -ErrorAction SilentlyContinue
+        Remove-Item Env:CODEX_USER_INSTALL -ErrorAction SilentlyContinue
 
         Write-Host ""
         Write-Host "✅ Codex installation completed!" -ForegroundColor Green

@@ -9,6 +9,11 @@ param(
     [string]$GitHubRepo = "https://raw.githubusercontent.com/Marek-Codex/Plexus-Codex/main"
 )
 
+# Check for environment variables if parameters not provided (for remote execution)
+if (-not $GitHubRepo -and $env:CODEX_GITHUB_REPO) { $GitHubRepo = $env:CODEX_GITHUB_REPO }
+if (-not $InstallPath -and $env:CODEX_INSTALL_PATH) { $InstallPath = $env:CODEX_INSTALL_PATH }
+if (-not $UserInstall -and $env:CODEX_USER_INSTALL -eq "true") { $UserInstall = $true }
+
 # Check if running as administrator
 $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 

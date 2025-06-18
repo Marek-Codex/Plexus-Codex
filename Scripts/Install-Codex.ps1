@@ -72,17 +72,31 @@ Write-Host "✓ Directory structure created" -ForegroundColor Green
 function Download-File {
     param([string]$Url, [string]$OutputPath, [string]$Description)
 
-    try {
-        Write-Host "📥 Downloading $Description..." -ForegroundColor Cyan
-        Invoke-WebRequest -Uri $Url -OutFile $OutputPath -UseBasicParsing
-        Write-Host "✓ $Description downloaded" -ForegroundColor Green
-        return $true
+    $maxRetries = 3
+    $retryDelaySeconds = 5
+    $attempt = 0
+
+    while ($attempt -lt $maxRetries) {
+        $attempt++
+        try {
+            Write-Host "📥 Downloading $Description (Attempt $attempt/$maxRetries)..." -ForegroundColor Cyan
+            Invoke-WebRequest -Uri $Url -OutFile $OutputPath -UseBasicParsing
+            Write-Host "✓ $Description downloaded successfully" -ForegroundColor Green
+            return $true
+        }
+        catch {
+            Write-Host "✗ Failed to download $Description (Attempt $attempt/$maxRetries)" -ForegroundColor Red
+            Write-Host "  Error: $($_.Exception.Message)" -ForegroundColor Gray
+            if ($attempt -lt $maxRetries) {
+                Write-Host "⏱️ Retrying in $retryDelaySeconds seconds..." -ForegroundColor Yellow
+                Start-Sleep -Seconds $retryDelaySeconds
+            } else {
+                Write-Host "❌ All retries failed for $Description." -ForegroundColor Red
+                return $false
+            }
+        }
     }
-    catch {
-        Write-Host "✗ Failed to download $Description" -ForegroundColor Red
-        Write-Host "  Error: $($_.Exception.Message)" -ForegroundColor Gray
-        return $false
-    }
+    return $false # Should not be reached if logic is correct
 }
 
 # Core files to download
@@ -100,8 +114,6 @@ $coreFiles = @(
     @{ Url = "$GitHubRepo/Scripts/RoboCopy.ps1"; Path = "Scripts\RoboCopy.ps1"; Name = "RoboCopy" }
     @{ Url = "$GitHubRepo/Scripts/RoboPaste.ps1"; Path = "Scripts\RoboPaste.ps1"; Name = "RoboPaste" }
     @{ Url = "$GitHubRepo/Scripts/IconTinter.ps1"; Path = "Scripts\IconTinter.ps1"; Name = "Icon Tinter" }
-    @{ Url = "$GitHubRepo/Scripts/AutoIconMapper.ps1"; Path = "Scripts\AutoIconMapper.ps1"; Name = "Auto Icon Mapper" }
-    @{ Url = "$GitHubRepo/Scripts/Install.ps1"; Path = "Scripts\Install.ps1"; Name = "Local Installer" }
     @{ Url = "$GitHubRepo/Tools/nircmd.exe"; Path = "Tools\nircmd.exe"; Name = "NirCmd Utility" }
     @{ Url = "$GitHubRepo/ICONS.md"; Path = "ICONS.md"; Name = "Icon Reference" }
     @{ Url = "$GitHubRepo/README.md"; Path = "README.md"; Name = "Documentation" }
@@ -124,6 +136,19 @@ foreach ($file in $coreFiles) {
     if (Download-File -Url $file.Url -OutputPath $outputPath -Description $file.Name) {
         $downloadCount++
     }
+    else {
+        # Check if the failed download is a critical file
+        $criticalCoreFiles = @(
+            "Registry Structure", "Power Manager", "Game Turbo", "Dynamic Boost",
+            "Process Killer", "Memory Optimizer", "Cleanup Temp", "WiFi Toggle",
+            "DNS Switcher", "Ping Test", "RoboCopy", "RoboPaste",
+            "Icon Tinter", "NirCmd Utility"
+        )
+        if ($file.Name -in $criticalCoreFiles) {
+            Write-Host "❌ Critical file $($file.Name) failed to download. Installation cannot continue." -ForegroundColor Red
+            exit 1
+        }
+    }
 
     # Progress indicator
     $percent = [math]::Round(($downloadCount / $totalFiles) * 100)
@@ -141,12 +166,45 @@ if (-not $NoIcons) {
 
     # Define icon pack URLs (these would be the actual icons you've curated)
     $iconPack = @(
-        @{ Url = "$GitHubRepo/Icons/PowerSaver.png"; Path = "Icons\Source\PowerSaver.png" }
-        @{ Url = "$GitHubRepo/Icons/Balanced.png"; Path = "Icons\Source\Balanced.png" }
-        @{ Url = "$GitHubRepo/Icons/Performance.png"; Path = "Icons\Source\Performance.png" }
-        @{ Url = "$GitHubRepo/Icons/GameTurbo.png"; Path = "Icons\Source\GameTurbo.png" }
-        @{ Url = "$GitHubRepo/Icons/ProcessKiller.png"; Path = "Icons\Source\ProcessKiller.png" }
-        # ... add all your curated icons here
+        @{ Url = "$GitHubRepo/Icons/Source/AlwaysOnTop.png"; Path = "Icons\Source\AlwaysOnTop.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/Balanced.png"; Path = "Icons\Source\Balanced.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/BrandIcon.png"; Path = "Icons\Source\BrandIcon.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/CMD.png"; Path = "Icons\Source\CMD.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/CleanupTemp.png"; Path = "Icons\Source\CleanupTemp.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/CustomPing.png"; Path = "Icons\Source\CustomPing.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/DNSSwitcher.png"; Path = "Icons\Source\DNSSwitcher.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/DeviceManager.png"; Path = "Icons\Source\DeviceManager.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/DynamicBoost.png"; Path = "Icons\Source\DynamicBoost.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/EmptyRecycleBin.png"; Path = "Icons\Source\EmptyRecycleBin.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/GameTurbo.png"; Path = "Icons\Source\GameTurbo.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/GodMode.png"; Path = "Icons\Source\GodMode.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/Hibernate.png"; Path = "Icons\Source\Hibernate.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/MaximizeWindow.png"; Path = "Icons\Source\MaximizeWindow.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/MinimizeWindow.png"; Path = "Icons\Source\MinimizeWindow.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/Performance.png"; Path = "Icons\Source\Performance.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/PingCloudflare.png"; Path = "Icons\Source\PingCloudflare.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/PingGoogle.png"; Path = "Icons\Source\PingGoogle.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/PingTest.png"; Path = "Icons\Source\PingTest.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/PowerSaver.png"; Path = "Icons\Source\PowerSaver.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/PowerShell.png"; Path = "Icons\Source\PowerShell.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/ProcessKiller.png"; Path = "Icons\Source\ProcessKiller.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/ReduceMemory.png"; Path = "Icons\Source\ReduceMemory.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/RefreshDesktop.png"; Path = "Icons\Source\RefreshDesktop.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/Restart.png"; Path = "Icons\Source\Restart.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/RoboCopy.png"; Path = "Icons\Source\RoboCopy.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/RoboPaste.png"; Path = "Icons\Source\RoboPaste.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/Screensaver.png"; Path = "Icons\Source\Screensaver.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/Shutdown.png"; Path = "Icons\Source\Shutdown.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/Sleep.png"; Path = "Icons\Source\Sleep.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/SystemInfo.png"; Path = "Icons\Source\SystemInfo.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/TaskManager.png"; Path = "Icons\Source\TaskManager.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/Transparency.png"; Path = "Icons\Source\Transparency.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/Volume.png"; Path = "Icons\Source\Volume.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/VolumeDown.png"; Path = "Icons\Source\VolumeDown.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/VolumeMax.png"; Path = "Icons\Source\VolumeMax.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/VolumeMute.png"; Path = "Icons\Source\VolumeMute.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/VolumeUp.png"; Path = "Icons\Source\VolumeUp.png" },
+        @{ Url = "$GitHubRepo/Icons/Source/WifiToggle.png"; Path = "Icons\Source\WifiToggle.png" }
     )
 
     $iconCount = 0
@@ -154,6 +212,11 @@ if (-not $NoIcons) {
         $outputPath = Join-Path $codexPath $icon.Path
         if (Download-File -Url $icon.Url -OutputPath $outputPath -Description "Icon: $(Split-Path $icon.Path -Leaf)") {
             $iconCount++
+        }
+        else {
+            # If an icon fails to download and we are processing icons, it's critical
+            Write-Host "❌ Critical icon $($icon.Path) failed to download. Installation cannot continue as icons are being processed." -ForegroundColor Red
+            exit 1
         }
     }
 

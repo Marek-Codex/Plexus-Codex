@@ -25,13 +25,11 @@ if (-not $InstallPath) {
         # User-specific installation
         $InstallPath = "$env:LOCALAPPDATA\Plexus"
         Write-Host "📁 User installation mode: $InstallPath\Codex" -ForegroundColor Cyan
-    } else {
+    }
+    else {
         # System-wide installation (preferred)
         $InstallPath = "$env:ProgramData\Plexus"
         Write-Host "📁 System-wide installation: $InstallPath\Codex" -ForegroundColor Cyan
-    }
-}
-        Write-Host "📁 System-wide installation: $InstallPath" -ForegroundColor Cyan
     }
 }
 
@@ -90,7 +88,8 @@ function Download-File {
             if ($attempt -lt $maxRetries) {
                 Write-Host "⏱️ Retrying in $retryDelaySeconds seconds..." -ForegroundColor Yellow
                 Start-Sleep -Seconds $retryDelaySeconds
-            } else {
+            }
+            else {
                 Write-Host "❌ All retries failed for $Description." -ForegroundColor Red
                 return $false
             }
@@ -275,7 +274,8 @@ $uninstallPath = Join-Path $codexPath "Scripts\Uninstall-Codex.ps1"
 if (Test-Path $sourceUninstaller) {
     Copy-Item $sourceUninstaller $uninstallPath -Force
     Write-Host "✓ Comprehensive uninstaller installed" -ForegroundColor Green
-} else {
+}
+else {
     # Fallback: Create basic uninstaller
     $uninstallScript = @"
 # Codex Uninstaller - Basic Version

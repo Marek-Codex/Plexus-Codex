@@ -75,12 +75,7 @@ If you prefer manual installation:
    ```powershell
    .\Install.ps1
    ```
-
-1. **Import Registry**: Right-click `Registry\Codex.reg` and select "Merge"
-2. **Set Execution Policy**:
-   ```powershell
-   Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-   ```
+   The `.\Install.ps1` script handles registry importation with corrected paths. Manual import of `Codex.reg` is not recommended as it contains placeholder paths. The script also sets the required PowerShell execution policy.
 
 ## Usage
 
@@ -108,20 +103,24 @@ Dynamic Boost analyzes your system every 10 seconds and:
 
 ## File Structure
 ```
-GhostMode/
-├── Scripts/
-│   ├── PowerManager.ps1      # Standard power plan switching
-│   ├── GameTurbo.ps1         # Ultimate gaming optimization
-│   ├── DynamicBoost.ps1      # Intelligent performance management
-│   ├── PingTest.ps1          # Network connectivity testing
-│   ├── ReduceMemory.ps1      # Memory optimization
-│   ├── CleanupTemp.ps1       # System cleanup
-│   ├── RoboCopy.ps1          # Advanced file copying
-│   └── RoboPaste.ps1         # Smart paste operations
+Plexus-Codex/
+├── Codex-Manager.ps1       # Main remote installer/uninstaller script
+├── Codex-Manager.bat       # Batch file wrapper for Codex-Manager.ps1
+├── Install.ps1             # Local installer script (for manual repo download)
+├── README.md               # This file
+├── Icons/
+│   ├── Source/             # Source PNG icons (white, for theming)
+│   └── Tinted/             # Output for themed ICO/PNG icons by IconTinter.ps1
 ├── Registry/
-│   └── GhostMode.reg         # Registry entries for context menu
-├── Install.ps1               # Installation script
-└── README.md                 # This file
+│   └── Codex.reg           # Registry entries (uses placeholders, modified by installer)
+├── Scripts/
+│   ├── Install-Codex.ps1   # Advanced installer (core logic, called by Codex-Manager)
+│   ├── Uninstall-Codex.ps1 # Uninstaller script
+│   ├── IconTinter.ps1      # Script to create themed icons
+│   ├── PowerManager.ps1    # Example utility script
+│   └── ...                 # Other PowerShell utility scripts
+└── Tools/
+    └── nircmd.exe          # NirCmd utility (downloaded by installer)
 ```
 
 ## Requirements
@@ -133,13 +132,15 @@ GhostMode/
 ## Uninstallation
 
 ### Automatic Uninstallation (Recommended)
-Run the uninstaller script as Administrator:
 ```powershell
-# Navigate to Codex directory
-cd "C:\Users\Marek\Plexus Codex\Codex\Scripts"
+# Recommended: Use the Codex Manager script
+irm https://raw.githubusercontent.com/Marek-Codex/Plexus-Codex/main/Codex-Manager.ps1 | iex -Uninstall
 
-# Run uninstaller
-.\Uninstall-Codex.ps1
+# Alternative (if you know your installation path):
+# 1. Navigate to your Codex installation directory (e.g., C:\ProgramData\Plexus\Codex or %LOCALAPPDATA%\Plexus\Codex)
+# 2. Open the 'Scripts' subfolder.
+# 3. Run PowerShell as Administrator in this folder and execute:
+#    .\Uninstall-Codex.ps1
 ```
 
 **Uninstaller Options:**

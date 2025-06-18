@@ -14,11 +14,29 @@ if (-not $GitHubRepo -and $env:CODEX_GITHUB_REPO) { $GitHubRepo = $env:CODEX_GIT
 if (-not $InstallPath -and $env:CODEX_INSTALL_PATH) { $InstallPath = $env:CODEX_INSTALL_PATH }
 if (-not $UserInstall -and $env:CODEX_USER_INSTALL -eq "true") { $UserInstall = $true }
 
+# Detect if running remotely (no proper script path)
+$isRemoteExecution = $false
+try {
+    $scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Path
+    if (-not $scriptPath -or $scriptPath -eq "") {
+        $isRemoteExecution = $true
+    }
+} catch {
+    $isRemoteExecution = $true
+}
+
 # Check if running as administrator
 $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 
-# Get current script directory for referencing files
-$scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Path
+# Get current script directory for referencing files (only if not remote execution)
+$scriptPath = $null
+if (-not $isRemoteExecution) {
+    try {
+        $scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Path
+    } catch {
+        # Ignore errors for remote execution
+    }
+}
 
 Write-Host "=== Plexus Codex One-Click Installer ===" -ForegroundColor Cyan
 Write-Host "🎯 The ultimate Windows context menu system" -ForegroundColor White

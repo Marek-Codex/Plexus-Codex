@@ -6,11 +6,27 @@ param(
     [switch]$NoIcons,
     [switch]$Portable,
     [switch]$UserInstall,
-    [string]$GitHubRepo = "https://raw.githubusercontent.com/Marek-Codex/Plexus-Codex/main"
+    [string]$GitHubRepoParam = "https://raw.githubusercontent.com/Marek-Codex/Plexus-Codex/main"
 )
 
+# Prioritize environment variable, then parameter, then default
+$GitHubRepo = $env:CODEX_GITHUB_REPO
+if (-not $GitHubRepo) {
+    $GitHubRepo = $GitHubRepoParam
+}
+if (-not $GitHubRepo) {
+    $GitHubRepo = "https://raw.githubusercontent.com/Marek-Codex/Plexus-Codex/main"
+    Write-Host "⚠️ GitHubRepo not found in env var or param, using default: $GitHubRepo" -ForegroundColor Yellow
+}
+
+# Final check to ensure $GitHubRepo is not empty
+if (-not $GitHubRepo) {
+    $GitHubRepo = "https://raw.githubusercontent.com/Marek-Codex/Plexus-Codex/main"
+    Write-Host "⚠️ GitHubRepo was empty, using default: $GitHubRepo" -ForegroundColor Yellow
+}
+
 # Check for environment variables if parameters not provided (for remote execution)
-if (-not $GitHubRepo -and $env:CODEX_GITHUB_REPO) { $GitHubRepo = $env:CODEX_GITHUB_REPO }
+# if (-not $GitHubRepo -and $env:CODEX_GITHUB_REPO) { $GitHubRepo = $env:CODEX_GITHUB_REPO } # Old logic replaced
 if (-not $InstallPath -and $env:CODEX_INSTALL_PATH) { $InstallPath = $env:CODEX_INSTALL_PATH }
 if (-not $UserInstall -and $env:CODEX_USER_INSTALL -eq "true") { $UserInstall = $true }
 
@@ -55,6 +71,18 @@ else {
     Write-Host "📁 Custom installation path: $InstallPath\Codex" -ForegroundColor Cyan
 }
 
+# Validate InstallPath
+if (-not $InstallPath) {
+    Write-Host "❌ ERROR: InstallPath could not be determined. Please specify -InstallPath or set CODEX_INSTALL_PATH." -ForegroundColor Red
+    exit 1
+}
+$InstallPath = $InstallPath.TrimEnd('\').TrimEnd('/') # Ensure no trailing slash (Windows or Unix-style)
+if (-not $InstallPath) { # Check again after trimming, in case it was just slashes
+    Write-Host "❌ ERROR: InstallPath became empty after trimming trailing slashes. Please provide a valid path." -ForegroundColor Red
+    exit 1
+}
+Write-Host "✓ InstallPath validated: $InstallPath" -ForegroundColor Green
+
 
 if (-not $isAdmin -and -not $Portable -and -not $UserInstall) {
     Write-Host "⚠️  Administrator privileges recommended for system-wide installation" -ForegroundColor Yellow
@@ -69,11 +97,32 @@ if (-not $isAdmin -and -not $Portable -and -not $UserInstall) {
     $InstallPath = "$env:LOCALAPPDATA\Plexus"
 }
 
-# Create installation directory
-Write-Host "📁 Creating installation directory..." -ForegroundColor Green
+# Define and validate codexPath
 $codexPath = Join-Path $InstallPath "Codex"
-if (-not (Test-Path $codexPath)) {
-    New-Item -ItemType Directory -Path $codexPath -Force | Out-Null
+if (-not $codexPath) {
+    Write-Host "❌ ERROR: codexPath could not be constructed. InstallPath was '$InstallPath'." -ForegroundColor Red
+    exit 1
+}
+Write-Host "✓ CodexPath determined: $codexPath" -ForegroundColor Green
+
+# Create installation directory with error handling
+Write-Host "📁 Creating installation directory structure..." -ForegroundColor Green
+try {
+    $parentDir = Split-Path $codexPath
+    if (-not (Test-Path $parentDir)) {
+        Write-Host "  Creating parent directory: $parentDir" -ForegroundColor Gray
+        New-Item -ItemType Directory -Path $parentDir -Force -ErrorAction Stop | Out-Null
+    }
+    if (-not (Test-Path $codexPath)) {
+        Write-Host "  Creating Codex directory: $codexPath" -ForegroundColor Gray
+        New-Item -ItemType Directory -Path $codexPath -Force -ErrorAction Stop | Out-Null
+    }
+    Write-Host "✓ Installation directory structure created/verified." -ForegroundColor Green
+}
+catch {
+    Write-Host "❌ ERROR: Failed to create installation directory '$codexPath'. Error: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "   Please check permissions and path validity." -ForegroundColor Yellow
+    exit 1
 }
 
 # Directory structure
@@ -137,6 +186,7 @@ $coreFiles = @(
     @{ Url = "$GitHubRepo/Tools/nircmd.exe"; Path = "Tools\nircmd.exe"; Name = "NirCmd Utility" }
     @{ Url = "$GitHubRepo/ICONS.md"; Path = "ICONS.md"; Name = "Icon Reference" }
     @{ Url = "$GitHubRepo/README.md"; Path = "README.md"; Name = "Documentation" }
+    @{ Url = "$GitHubRepo/Scripts/Uninstall-Codex.ps1"; Path = (Join-Path 'Scripts' 'Uninstall-Codex.ps1'); Name = "Comprehensive Uninstaller" }
 )
 
 # Download core files
@@ -162,7 +212,7 @@ foreach ($file in $coreFiles) {
             "Registry Structure", "Power Manager", "Game Turbo", "Dynamic Boost",
             "Process Killer", "Memory Optimizer", "Cleanup Temp", "WiFi Toggle",
             "DNS Switcher", "Ping Test", "RoboCopy", "RoboPaste",
-            "Icon Tinter", "NirCmd Utility"
+            "Icon Tinter", "NirCmd Utility", "Comprehensive Uninstaller"
         )
         if ($file.Name -in $criticalCoreFiles) {
             Write-Host "❌ Critical file $($file.Name) failed to download. Installation cannot continue." -ForegroundColor Red
@@ -263,11 +313,19 @@ Write-Host ""
 Write-Host "🔧 Configuring installation paths..." -ForegroundColor Cyan
 
 $registryPath = Join-Path $codexPath "Registry\Codex.reg"
-if (Test-Path $registryPath) {
+if (-not ($registryPath -and (Test-Path $registryPath -PathType Leaf))) { # Added -PathType Leaf and null check
+    Write-Host "❌ ERROR: Registry file '$registryPath' not found or is not a file. Skipping registry path update." -ForegroundColor Red
+    # If $Portable is false, this is a critical issue.
+    if (-not $Portable) {
+        Write-Host "❌ This is a critical error as registry installation is requested. Installation cannot proceed." -ForegroundColor Red
+        exit 1
+    }
+}
+else {
     $regContent = Get-Content $registryPath -Raw
     $regContent = $regContent -replace '%%CODEX_INSTALL_PATH%%', $codexPath.Replace('\', '\\')
     Set-Content -Path $registryPath -Value $regContent -Encoding UTF8
-    Write-Host "✓ Registry paths updated" -ForegroundColor Green
+    Write-Host "✓ Registry paths updated in '$registryPath'" -ForegroundColor Green
 }
 
 # Install registry entries
@@ -275,38 +333,39 @@ if (-not $Portable) {
     Write-Host ""
     Write-Host "📝 Installing registry entries..." -ForegroundColor Yellow
 
-    try {
-        & regedit.exe /s $registryPath
-        Write-Host "✓ Codex context menu installed!" -ForegroundColor Green
+    if (-not ($registryPath -and (Test-Path $registryPath -PathType Leaf))) { # Added -PathType Leaf and null check
+        Write-Host "❌ ERROR: Registry file '$registryPath' not found or is not a file. Skipping registry import." -ForegroundColor Red
+        Write-Host "   This is unexpected if downloads completed. Please check the 'Registry' folder in '$codexPath'." -ForegroundColor Yellow
+        # This implies a critical failure if we reached here and $Portable is false.
+        exit 1
     }
-    catch {
-        Write-Host "⚠️  Registry installation failed. Run Install.ps1 manually as Administrator." -ForegroundColor Yellow
+    else {
+        try {
+            Write-Host "  Importing registry file: $registryPath" -ForegroundColor Gray
+            & regedit.exe /s $registryPath
+            Write-Host "✓ Codex context menu installed!" -ForegroundColor Green
+        }
+        catch {
+            Write-Host "⚠️  Registry installation failed. Error: $($_.Exception.Message)" -ForegroundColor Yellow
+            Write-Host "   Run '$codexPath\Scripts\Install.ps1' manually as Administrator, or import '$registryPath' manually." -ForegroundColor Yellow
+        }
     }
 }
 
 # Create desktop shortcuts and start menu entries
-Write-Host ""
-Write-Host "🔗 Creating shortcuts..." -ForegroundColor Cyan
+# Write-Host ""
+# Write-Host "🔗 Creating shortcuts..." -ForegroundColor Cyan
+# The section above regarding shortcuts might be reviewed later if actual shortcut creation is desired.
+# For now, the primary focus is on the uninstaller path.
 
-# Copy the comprehensive uninstaller
-$sourceUninstaller = Join-Path $scriptPath "Uninstall-Codex.ps1"
-$uninstallPath = Join-Path $codexPath "Scripts\Uninstall-Codex.ps1"
+# Define the path for the uninstaller script downloaded via $coreFiles
+$uninstallPath = Join-Path $codexPath (Join-Path 'Scripts' 'Uninstall-Codex.ps1')
 
-if (Test-Path $sourceUninstaller) {
-    Copy-Item $sourceUninstaller $uninstallPath -Force
-    Write-Host "✓ Comprehensive uninstaller installed" -ForegroundColor Green
+if (Test-Path $uninstallPath) {
+    Write-Host "✓ Comprehensive uninstaller is available at: $uninstallPath" -ForegroundColor Green
 }
 else {
-    # Fallback: Create basic uninstaller
-    $uninstallScript = @"
-# Codex Uninstaller - Basic Version
-Write-Host "Removing Codex context menu..." -ForegroundColor Yellow
-Remove-Item "HKCU:\SOFTWARE\Classes\Directory\Background\shell\Codex" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "HKLM:\SOFTWARE\Classes\Directory\Background\shell\Codex" -Recurse -Force -ErrorAction SilentlyContinue
-Write-Host "✓ Codex uninstalled successfully!" -ForegroundColor Green
-"@
-    Set-Content -Path $uninstallPath -Value $uninstallScript
-    Write-Host "✓ Basic uninstaller created" -ForegroundColor Green
+    Write-Host "⚠️ WARNING: Comprehensive uninstaller was NOT found at $uninstallPath. This should not happen if critical downloads succeeded." -ForegroundColor Yellow
 }
 
 # Final summary

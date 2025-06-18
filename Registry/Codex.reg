@@ -3,7 +3,7 @@ Windows Registry Editor Version 5.00
 ; Main Codex entry - clean cyberpunk aesthetic
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex]
 @="Codex"
-"Icon"="C:\\Users\\Marek\\Plexus Codex\\Codex\\Icons\\Tinted\\BrandIcon.ico"
+"Icon"="%%CODEX_INSTALL_PATH%%\\Icons\\Tinted\\BrandIcon.ico"
 "MUIVerb"="Codex"
 "SubCommands"=""
 
@@ -26,19 +26,19 @@ Windows Registry Editor Version 5.00
 @="Low Power Mode"
 "Icon"="powercpl.dll,1"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\PowerOptions\shell\PowerSaver\command]
-@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Marek\\Plexus Codex\\Codex\\Scripts\\PowerManager.ps1\" PowerSaver"
+@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%%CODEX_INSTALL_PATH%%\\Scripts\\PowerManager.ps1\" PowerSaver"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\PowerOptions\shell\Balanced]
 @="Balanced Mode"
 "Icon"="powercpl.dll,2"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\PowerOptions\shell\Balanced\command]
-@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Marek\\Plexus Codex\\Codex\\Scripts\\PowerManager.ps1\" Balanced"
+@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%%CODEX_INSTALL_PATH%%\\Scripts\\PowerManager.ps1\" Balanced"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\PowerOptions\shell\HighPerformance]
 @="Max Performance"
 "Icon"="powercpl.dll,3"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\PowerOptions\shell\HighPerformance\command]
-@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Marek\\Plexus Codex\\Codex\\Scripts\\PowerManager.ps1\" HighPerformance"
+@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%%CODEX_INSTALL_PATH%%\\Scripts\\PowerManager.ps1\" HighPerformance"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\PowerOptions\shell\Separator1]
 @="━━━━━━━━━━━━━━━━━━━━"
@@ -48,13 +48,13 @@ Windows Registry Editor Version 5.00
 @="Combat Mode"
 "Icon"="shell32.dll,15"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\PowerOptions\shell\GameTurbo\command]
-@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Marek\\Plexus Codex\\Codex\\Scripts\\GameTurbo.ps1\""
+@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%%CODEX_INSTALL_PATH%%\\Scripts\\GameTurbo.ps1\""
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\PowerOptions\shell\DynamicBoost]
 @="Dynamic Boost"
 "Icon"="shell32.dll,16"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\PowerOptions\shell\DynamicBoost\command]
-@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Marek\\Plexus Codex\\Codex\\Scripts\\DynamicBoost.ps1\""
+@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%%CODEX_INSTALL_PATH%%\\Scripts\\DynamicBoost.ps1\""
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\PowerOptions\shell\Separator2]
 @="━━━━━━━━━━━━━━━━━━━━"
@@ -83,19 +83,19 @@ Windows Registry Editor Version 5.00
 @="Process Terminator"
 "Icon"="shell32.dll,131"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\SystemControl\shell\ProcessKiller\command]
-@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Marek\\Plexus Codex\\Codex\\Scripts\\ProcessKiller.ps1\""
+@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%%CODEX_INSTALL_PATH%%\\Scripts\\ProcessKiller.ps1\""
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\SystemControl\shell\ReduceMemory]
 @="Memory Optimizer"
 "Icon"="shell32.dll,136"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\SystemControl\shell\ReduceMemory\command]
-@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Marek\\Plexus Codex\\Codex\\Scripts\\ReduceMemory.ps1\""
+@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%%CODEX_INSTALL_PATH%%\\Scripts\\ReduceMemory.ps1\""
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\SystemControl\shell\CleanupTemp]
 @="Data Purge"
 "Icon"="shell32.dll,32"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\SystemControl\shell\CleanupTemp\command]
-@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Marek\\Plexus Codex\\Codex\\Scripts\\CleanupTemp.ps1\""
+@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%%CODEX_INSTALL_PATH%%\\Scripts\\CleanupTemp.ps1\""
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\SystemControl\shell\Separator3]
 @="━━━━━━━━━━━━━━━━━━━━"
@@ -105,25 +105,25 @@ Windows Registry Editor Version 5.00
 @="Show Desktop"
 "Icon"="shell32.dll,34"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\SystemControl\shell\ShowDesktop\command]
-@="\"C:\\Users\\Marek\\Plexus Codex\\Codex\\Tools\\nircmd.exe\" sendkeypress win+d"
+@="\"%%CODEX_INSTALL_PATH%%\\Tools\\nircmd.exe\" sendkeypress win+d"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\SystemControl\shell\MinimizeAll]
 @="Minimize All"
 "Icon"="shell32.dll,35"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\SystemControl\shell\MinimizeAll\command]
-@="\"C:\\Users\\Marek\\Plexus Codex\\Codex\\Tools\\nircmd.exe\" sendkeypress win+m"
+@="\"%%CODEX_INSTALL_PATH%%\\Tools\\nircmd.exe\" sendkeypress win+m"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\SystemControl\shell\LockScreen]
 @="Lock Workstation"
 "Icon"="shell32.dll,47"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\SystemControl\shell\LockScreen\command]
-@="\"C:\\Users\\Marek\\Plexus Codex\\Codex\\Tools\\nircmd.exe\" lockws"
+@="\"%%CODEX_INSTALL_PATH%%\\Tools\\nircmd.exe\" lockws"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\SystemControl\shell\ScreenOff]
 @="Display Sleep"
 "Icon"="shell32.dll,27"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\SystemControl\shell\ScreenOff\command]
-@="\"C:\\Users\\Marek\\Plexus Codex\\Codex\\Tools\\nircmd.exe\" monitor off"
+@="\"%%CODEX_INSTALL_PATH%%\\Tools\\nircmd.exe\" monitor off"
 
 ; ===== DIVIDER 3: AUDIO & NETWORK =====
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\AudioNetworkDivider]
@@ -142,25 +142,25 @@ Windows Registry Editor Version 5.00
 @="Volume Up"
 "Icon"="shell32.dll,168"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\AudioNetwork\shell\VolumeUp\command]
-@="\"C:\\Users\\Marek\\Plexus Codex\\Codex\\Tools\\nircmd.exe\" changesysvolume 6553"
+@="\"%%CODEX_INSTALL_PATH%%\\Tools\\nircmd.exe\" changesysvolume 6553"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\AudioNetwork\shell\VolumeDown]
 @="Volume Down"
 "Icon"="shell32.dll,168"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\AudioNetwork\shell\VolumeDown\command]
-@="\"C:\\Users\\Marek\\Plexus Codex\\Codex\\Tools\\nircmd.exe\" changesysvolume -6553"
+@="\"%%CODEX_INSTALL_PATH%%\\Tools\\nircmd.exe\" changesysvolume -6553"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\AudioNetwork\shell\VolumeMax]
 @="Volume Max"
 "Icon"="shell32.dll,168"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\AudioNetwork\shell\VolumeMax\command]
-@="\"C:\\Users\\Marek\\Plexus Codex\\Codex\\Tools\\nircmd.exe\" setsysvolume 65535"
+@="\"%%CODEX_INSTALL_PATH%%\\Tools\\nircmd.exe\" setsysvolume 65535"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\AudioNetwork\shell\VolumeMute]
 @="Mute Toggle"
 "Icon"="shell32.dll,169"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\AudioNetwork\shell\VolumeMute\command]
-@="\"C:\\Users\\Marek\\Plexus Codex\\Codex\\Tools\\nircmd.exe\" mutesysvolume 2"
+@="\"%%CODEX_INSTALL_PATH%%\\Tools\\nircmd.exe\" mutesysvolume 2"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\AudioNetwork\shell\Separator4]
 @="━━━━━━━━━━━━━━━━━━━━"
@@ -170,7 +170,7 @@ Windows Registry Editor Version 5.00
 @="WiFi Toggle"
 "Icon"="shell32.dll,174"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\AudioNetwork\shell\WifiToggle\command]
-@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Marek\\Plexus Codex\\Codex\\Scripts\\WifiToggle.ps1\""
+@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%%CODEX_INSTALL_PATH%%\\Scripts\\WifiToggle.ps1\""
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\AudioNetwork\shell\DNSControl]
 @="DNS Control"
@@ -183,31 +183,31 @@ Windows Registry Editor Version 5.00
 @="Google DNS"
 "Icon"="shell32.dll,174"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\AudioNetwork\shell\DNSControl\shell\GoogleDNS\command]
-@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Marek\\Plexus Codex\\Codex\\Scripts\\DNSSwitcher.ps1\" Google"
+@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%%CODEX_INSTALL_PATH%%\\Scripts\\DNSSwitcher.ps1\" Google"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\AudioNetwork\shell\DNSControl\shell\CloudflareDNS]
 @="Cloudflare DNS"
 "Icon"="shell32.dll,174"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\AudioNetwork\shell\DNSControl\shell\CloudflareDNS\command]
-@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Marek\\Plexus Codex\\Codex\\Scripts\\DNSSwitcher.ps1\" Cloudflare"
+@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%%CODEX_INSTALL_PATH%%\\Scripts\\DNSSwitcher.ps1\" Cloudflare"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\AudioNetwork\shell\DNSControl\shell\Quad9DNS]
 @="Quad9 DNS"
 "Icon"="shell32.dll,174"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\AudioNetwork\shell\DNSControl\shell\Quad9DNS\command]
-@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Marek\\Plexus Codex\\Codex\\Scripts\\DNSSwitcher.ps1\" Quad9"
+@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%%CODEX_INSTALL_PATH%%\\Scripts\\DNSSwitcher.ps1\" Quad9"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\AudioNetwork\shell\DNSControl\shell\AutoDNS]
 @="Auto DNS (DHCP)"
 "Icon"="shell32.dll,174"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\AudioNetwork\shell\DNSControl\shell\AutoDNS\command]
-@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Marek\\Plexus Codex\\Codex\\Scripts\\DNSSwitcher.ps1\" Auto"
+@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%%CODEX_INSTALL_PATH%%\\Scripts\\DNSSwitcher.ps1\" Auto"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\AudioNetwork\shell\DNSControl\shell\FlushDNS]
 @="Flush DNS Cache"
 "Icon"="shell32.dll,172"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\AudioNetwork\shell\DNSControl\shell\FlushDNS\command]
-@="\"C:\\Users\\Marek\\Plexus Codex\\Codex\\Tools\\nircmd.exe\" flushdns"
+@="\"%%CODEX_INSTALL_PATH%%\\Tools\\nircmd.exe\" flushdns"
 
 ; ===== DIVIDER 4: WINDOW MANAGEMENT =====
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\WindowMgmtDivider]
@@ -226,25 +226,25 @@ Windows Registry Editor Version 5.00
 @="Always On Top"
 "Icon"="shell32.dll,137"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\WindowMgmt\shell\AlwaysOnTop\command]
-@="\"C:\\Users\\Marek\\Plexus Codex\\Codex\\Tools\\nircmd.exe\" win +topmost title"
+@="\"%%CODEX_INSTALL_PATH%%\\Tools\\nircmd.exe\" win +topmost title"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\WindowMgmt\shell\RemoveOnTop]
 @="Remove Always On Top"
 "Icon"="shell32.dll,137"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\WindowMgmt\shell\RemoveOnTop\command]
-@="\"C:\\Users\\Marek\\Plexus Codex\\Codex\\Tools\\nircmd.exe\" win -topmost title"
+@="\"%%CODEX_INSTALL_PATH%%\\Tools\\nircmd.exe\" win -topmost title"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\WindowMgmt\shell\Transparency]
 @="Toggle Transparency"
 "Icon"="shell32.dll,40"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\WindowMgmt\shell\Transparency\command]
-@="\"C:\\Users\\Marek\\Plexus Codex\\Codex\\Tools\\nircmd.exe\" win +trans title 50"
+@="\"%%CODEX_INSTALL_PATH%%\\Tools\\nircmd.exe\" win +trans title 50"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\WindowMgmt\shell\RemoveTransparency]
 @="Remove Transparency"
 "Icon"="shell32.dll,40"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\WindowMgmt\shell\RemoveTransparency\command]
-@="\"C:\\Users\\Marek\\Plexus Codex\\Codex\\Tools\\nircmd.exe\" win -trans title"
+@="\"%%CODEX_INSTALL_PATH%%\\Tools\\nircmd.exe\" win -trans title"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\WindowMgmt\shell\Separator5]
 @="━━━━━━━━━━━━━━━━━━━━"
@@ -254,13 +254,13 @@ Windows Registry Editor Version 5.00
 @="Maximize Active"
 "Icon"="shell32.dll,35"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\WindowMgmt\shell\MaximizeWindow\command]
-@="\"C:\\Users\\Marek\\Plexus Codex\\Codex\\Tools\\nircmd.exe\" win max title"
+@="\"%%CODEX_INSTALL_PATH%%\\Tools\\nircmd.exe\" win max title"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\WindowMgmt\shell\MinimizeWindow]
 @="Minimize Active"
 "Icon"="shell32.dll,37"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\WindowMgmt\shell\MinimizeWindow\command]
-@="\"C:\\Users\\Marek\\Plexus Codex\\Codex\\Tools\\nircmd.exe\" win min title"
+@="\"%%CODEX_INSTALL_PATH%%\\Tools\\nircmd.exe\" win min title"
 
 ; ===== DIVIDER 5: DESKTOP UTILITIES =====
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\DesktopUtilsDivider]
@@ -279,19 +279,19 @@ Windows Registry Editor Version 5.00
 @="Refresh Desktop"
 "Icon"="shell32.dll,238"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\DesktopUtils\shell\RefreshDesktop\command]
-@="\"C:\\Users\\Marek\\Plexus Codex\\Codex\\Tools\\nircmd.exe\" refreshdt"
+@="\"%%CODEX_INSTALL_PATH%%\\Tools\\nircmd.exe\" refreshdt"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\DesktopUtils\shell\EmptyRecycleBin]
 @="Empty Recycle Bin"
 "Icon"="shell32.dll,32"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\DesktopUtils\shell\EmptyRecycleBin\command]
-@="\"C:\\Users\\Marek\\Plexus Codex\\Codex\\Tools\\nircmd.exe\" emptybin"
+@="\"%%CODEX_INSTALL_PATH%%\\Tools\\nircmd.exe\" emptybin"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\DesktopUtils\shell\Screensaver]
 @="Start Screensaver"
 "Icon"="shell32.dll,27"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\DesktopUtils\shell\Screensaver\command]
-@="\"C:\\Users\\Marek\\Plexus Codex\\Codex\\Tools\\nircmd.exe\" screensaver"
+@="\"%%CODEX_INSTALL_PATH%%\\Tools\\nircmd.exe\" screensaver"
 
 ; ===== DIVIDER 6: QUICK ACCESS =====
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\QuickAccessDivider]
@@ -363,19 +363,19 @@ Windows Registry Editor Version 5.00
 @="Ping Google"
 "Icon"="shell32.dll,174"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\NetworkProbe\shell\PingGoogle\command]
-@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Marek\\Plexus Codex\\Codex\\Scripts\\PingTest.ps1\" 8.8.8.8"
+@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%%CODEX_INSTALL_PATH%%\\Scripts\\PingTest.ps1\" 8.8.8.8"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\NetworkProbe\shell\PingCloudflare]
 @="Ping Cloudflare"
 "Icon"="shell32.dll,174"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\NetworkProbe\shell\PingCloudflare\command]
-@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Marek\\Plexus Codex\\Codex\\Scripts\\PingTest.ps1\" 1.1.1.1"
+@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%%CODEX_INSTALL_PATH%%\\Scripts\\PingTest.ps1\" 1.1.1.1"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\NetworkProbe\shell\CustomPing]
 @="Custom Ping"
 "Icon"="shell32.dll,174"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\NetworkProbe\shell\CustomPing\command]
-@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Marek\\Plexus Codex\\Codex\\Scripts\\PingTest.ps1\""
+@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%%CODEX_INSTALL_PATH%%\\Scripts\\PingTest.ps1\""
 
 ; ===== DIVIDER 8: POWER CONTROL =====
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\PowerControlDivider]
@@ -394,25 +394,25 @@ Windows Registry Editor Version 5.00
 @="Shutdown"
 "Icon"="shell32.dll,27"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\SystemPower\shell\Shutdown\command]
-@="\"C:\\Users\\Marek\\Plexus Codex\\Codex\\Tools\\nircmd.exe\" exitwin shutdown"
+@="\"%%CODEX_INSTALL_PATH%%\\Tools\\nircmd.exe\" exitwin shutdown"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\SystemPower\shell\Restart]
 @="Restart"
 "Icon"="shell32.dll,238"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\SystemPower\shell\Restart\command]
-@="\"C:\\Users\\Marek\\Plexus Codex\\Codex\\Tools\\nircmd.exe\" exitwin reboot"
+@="\"%%CODEX_INSTALL_PATH%%\\Tools\\nircmd.exe\" exitwin reboot"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\SystemPower\shell\Sleep]
 @="Sleep"
 "Icon"="shell32.dll,28"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\SystemPower\shell\Sleep\command]
-@="\"C:\\Users\\Marek\\Plexus Codex\\Codex\\Tools\\nircmd.exe\" standby"
+@="\"%%CODEX_INSTALL_PATH%%\\Tools\\nircmd.exe\" standby"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\SystemPower\shell\Hibernate]
 @="Hibernate"
 "Icon"="shell32.dll,29"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\SystemPower\shell\Hibernate\command]
-@="\"C:\\Users\\Marek\\Plexus Codex\\Codex\\Tools\\nircmd.exe\" hibernate"
+@="\"%%CODEX_INSTALL_PATH%%\\Tools\\nircmd.exe\" hibernate"
 
 ; ===== DIVIDER 9: FILE OPERATIONS =====
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\FileOperationsDivider]
@@ -424,10 +424,10 @@ Windows Registry Editor Version 5.00
 @="RoboCopy"
 "Icon"="shell32.dll,133"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\RoboCopy\command]
-@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Marek\\Plexus Codex\\Codex\\Scripts\\RoboCopy.ps1\""
+@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%%CODEX_INSTALL_PATH%%\\Scripts\\RoboCopy.ps1\""
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\RoboPaste]
 @="RoboPaste"
 "Icon"="shell32.dll,134"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\RoboPaste\command]
-@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Marek\\Plexus Codex\\Codex\\Scripts\\RoboPaste.ps1\""
+@="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%%CODEX_INSTALL_PATH%%\\Scripts\\RoboPaste.ps1\""

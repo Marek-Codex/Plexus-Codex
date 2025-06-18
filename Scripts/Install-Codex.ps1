@@ -182,7 +182,7 @@ Write-Host "🔧 Configuring installation paths..." -ForegroundColor Cyan
 $registryPath = Join-Path $codexPath "Registry\Codex.reg"
 if (Test-Path $registryPath) {
     $regContent = Get-Content $registryPath -Raw
-    $regContent = $regContent -replace 'C:\\Users\\Marek\\Plexus Codex\\Codex', $codexPath.Replace('\', '\\')
+    $regContent = $regContent -replace '%%CODEX_INSTALL_PATH%%', $codexPath.Replace('\', '\\')
     Set-Content -Path $registryPath -Value $regContent -Encoding UTF8
     Write-Host "✓ Registry paths updated" -ForegroundColor Green
 }

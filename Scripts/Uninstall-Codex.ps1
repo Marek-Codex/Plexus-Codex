@@ -14,7 +14,12 @@ if (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
     exit 1
 }
 
-$codexPath = "PLACEHOLDER_PATH"
+# Determine the script's own directory
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+# Assume the Codex root is one level above the 'Scripts' directory where this uninstaller resides
+$codexPath = Split-Path -Parent $scriptDir
+Write-Host "Detected Codex installation path: $codexPath" -ForegroundColor DarkGray
+
 $registryKeys = @(
     "HKEY_CLASSES_ROOT\Directory\Background\shell\Codex"
 )

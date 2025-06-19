@@ -9,13 +9,23 @@ param(
     [string]$GitHubRepo = "https://raw.githubusercontent.com/Marek-Codex/Plexus-Codex/main"
 )
 
+# Ensure errors stop and are caught by trap
+$ErrorActionPreference = 'Stop'
+trap {
+    Write-Host "❌ Unexpected error: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host $_.Exception.StackTrace -ForegroundColor Red
+    Read-Host "Press Enter to exit"
+    exit 1
+}
+
 # Ensure required parameter values
 if (-not $GitHubRepo) { Write-Error "GitHubRepo must be provided"; exit 1 }
 if (-not $InstallPath) {
     # Choose default path
     if ($UserInstall -or -not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
         $InstallPath = "$env:LOCALAPPDATA\Plexus"
-    } else {
+    }
+    else {
         $InstallPath = "$env:ProgramData\Plexus"
     }
 }

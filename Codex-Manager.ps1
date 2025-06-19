@@ -94,6 +94,8 @@ function Install-Codex {
 
     } catch {
         Write-Host "❌ Installation failed: $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host $_.Exception.StackTrace -ForegroundColor Red
+        Read-Host "Press Enter to exit."
         exit 1
     }
 }

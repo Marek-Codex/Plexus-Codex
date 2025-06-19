@@ -253,8 +253,8 @@ if (Test-Path $registryPath) {
     Write-Host "DEBUG: First lines of processed registry content:" -ForegroundColor Magenta
     $regContent.Split("`n")[0..10] | ForEach-Object { Write-Host $_ -ForegroundColor Magenta }
 
-    # Write back
-    Set-Content -Path $registryPath -Value $regContent -Encoding UTF8
+    # Write back with proper encoding for .reg
+    $regContent | Out-File -FilePath $registryPath -Encoding Unicode
     Write-Host "✓ Registry paths updated" -ForegroundColor Green
 
     # Verify tinted icon exists

@@ -9,10 +9,16 @@ param(
     [string]$GitHubRepo = "https://raw.githubusercontent.com/Marek-Codex/Plexus-Codex/main"
 )
 
-# Check for environment variables if parameters not provided (for remote execution)
-if (-not $GitHubRepo -and $env:CODEX_GITHUB_REPO) { $GitHubRepo = $env:CODEX_GITHUB_REPO }
-if (-not $InstallPath -and $env:CODEX_INSTALL_PATH) { $InstallPath = $env:CODEX_INSTALL_PATH }
-if (-not $UserInstall -and $env:CODEX_USER_INSTALL -eq "true") { $UserInstall = $true }
+# Ensure required parameter values
+if (-not $GitHubRepo) { Write-Error "GitHubRepo must be provided"; exit 1 }
+if (-not $InstallPath) {
+    # Choose default path
+    if ($UserInstall -or -not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+        $InstallPath = "$env:LOCALAPPDATA\Plexus"
+    } else {
+        $InstallPath = "$env:ProgramData\Plexus"
+    }
+}
 
 # Detect if running remotely (no proper script path)
 $isRemoteExecution = $true
@@ -26,14 +32,6 @@ $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIde
 
 Write-Host "=== Plexus Codex One-Click Installer ===" -ForegroundColor Cyan
 Write-Host "🎯 The ultimate Windows context menu system" -ForegroundColor White
-Write-Host ""
-
-# Debug: Show parameter values
-Write-Host "DEBUG: Parameter values received:" -ForegroundColor Magenta
-Write-Host "  InstallPath: '$InstallPath'" -ForegroundColor Gray
-Write-Host "  UserInstall: $UserInstall" -ForegroundColor Gray
-Write-Host "  GitHubRepo: '$GitHubRepo'" -ForegroundColor Gray
-Write-Host "  isAdmin: $isAdmin" -ForegroundColor Gray
 Write-Host ""
 
 # Determine best installation path

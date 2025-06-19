@@ -69,30 +69,30 @@ function Install-Codex {
     Write-Host "🚀 Installing Plexus Codex..." -ForegroundColor Green
     Write-Host ""
 
-    # Download and execute the main installer
     try {
-        $installerUrl = "$GitHubRepo/Scripts/Install-Codex.ps1" # Changed to new installer
-        Write-Host "Downloading installer from: $installerUrl" -ForegroundColor Gray        $installerScript = Invoke-RestMethod -Uri $installerUrl -ErrorAction Stop
+        $installerUrl = "$GitHubRepo/Scripts/Install-Codex.ps1"
+        Write-Host "Downloading installer from: $installerUrl" -ForegroundColor Gray
 
-        # Pass parameters via environment variables (more reliable for downloaded scripts)
-        $env:CODEX_GITHUB_REPO = $GitHubRepo
-        if ($InstallPath) { $env:CODEX_INSTALL_PATH = $InstallPath }
-        if ($UserInstall) { $env:CODEX_USER_INSTALL = "true" }
+        # Download to temp file
+        $tempInstaller = Join-Path $env:TEMP "Install-Codex.ps1"
+        Invoke-RestMethod -Uri $installerUrl -OutFile $tempInstaller -UseBasicParsing -ErrorAction Stop
 
-        # Execute installer
-        Invoke-Expression $installerScript
+        # Prepare arguments
+        $invokeArgs = @("-GitHubRepo", $GitHubRepo)
+        if ($InstallPath) { $invokeArgs += "-InstallPath"; $invokeArgs += $InstallPath }
+        if ($UserInstall) { $invokeArgs += "-UserInstall" }
 
-        # Clean up environment variables
-        Remove-Item Env:CODEX_GITHUB_REPO -ErrorAction SilentlyContinue
-        Remove-Item Env:CODEX_INSTALL_PATH -ErrorAction SilentlyContinue
-        Remove-Item Env:CODEX_USER_INSTALL -ErrorAction SilentlyContinue
+        # Execute installer with named parameters
+        & $tempInstaller @invokeArgs
+
+        # Clean up
+        Remove-Item -Path $tempInstaller -Force -ErrorAction SilentlyContinue
 
         Write-Host ""
         Write-Host "✅ Codex installation completed!" -ForegroundColor Green
         Write-Host "Right-click on your desktop to access the Codex menu." -ForegroundColor Gray
 
-    }
-    catch {
+    } catch {
         Write-Host "❌ Installation failed: $($_.Exception.Message)" -ForegroundColor Red
         exit 1
     }

@@ -112,6 +112,7 @@ function Download-File {
             }
             else {
                 Write-Host "❌ All retries failed for $Description." -ForegroundColor Red
+                Read-Host "Critical download of $($Description) failed. $($_.Exception.Message). Press Enter to exit"
                 return $false
             }
         }
@@ -122,6 +123,7 @@ function Download-File {
 # Core files to download
 $coreFiles = @(
     @{ Url = "$GitHubRepo/Registry/Codex.reg"; Path = "Registry\Codex.reg"; Name = "Registry Structure" }
+    @{ Url = "$GitHubRepo/Scripts/Uninstall-Codex.ps1"; Path = "Scripts\Uninstall-Codex.ps1"; Name = "Comprehensive Uninstaller" }
     @{ Url = "$GitHubRepo/Scripts/PowerManager.ps1"; Path = "Scripts\PowerManager.ps1"; Name = "Power Manager" }
     @{ Url = "$GitHubRepo/Scripts/GameTurbo.ps1"; Path = "Scripts\GameTurbo.ps1"; Name = "Game Turbo" }
     @{ Url = "$GitHubRepo/Scripts/DynamicBoost.ps1"; Path = "Scripts\DynamicBoost.ps1"; Name = "Dynamic Boost" }
@@ -280,33 +282,9 @@ if (-not $Portable) {
         Write-Host "✓ Codex context menu installed!" -ForegroundColor Green
     }
     catch {
+        Read-Host "Registry installation failed. $($_.Exception.Message). Press Enter to acknowledge this error"
         Write-Host "⚠️  Registry installation failed. Run Install.ps1 manually as Administrator." -ForegroundColor Yellow
     }
-}
-
-# Create desktop shortcuts and start menu entries
-Write-Host ""
-Write-Host "🔗 Creating shortcuts..." -ForegroundColor Cyan
-
-# Copy the comprehensive uninstaller
-$sourceUninstaller = Join-Path $scriptPath "Uninstall-Codex.ps1"
-$uninstallPath = Join-Path $codexPath "Scripts\Uninstall-Codex.ps1"
-
-if (Test-Path $sourceUninstaller) {
-    Copy-Item $sourceUninstaller $uninstallPath -Force
-    Write-Host "✓ Comprehensive uninstaller installed" -ForegroundColor Green
-}
-else {
-    # Fallback: Create basic uninstaller
-    $uninstallScript = @"
-# Codex Uninstaller - Basic Version
-Write-Host "Removing Codex context menu..." -ForegroundColor Yellow
-Remove-Item "HKCU:\SOFTWARE\Classes\Directory\Background\shell\Codex" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "HKLM:\SOFTWARE\Classes\Directory\Background\shell\Codex" -Recurse -Force -ErrorAction SilentlyContinue
-Write-Host "✓ Codex uninstalled successfully!" -ForegroundColor Green
-"@
-    Set-Content -Path $uninstallPath -Value $uninstallScript
-    Write-Host "✓ Basic uninstaller created" -ForegroundColor Green
 }
 
 # Final summary
@@ -332,7 +310,7 @@ if ($Portable) {
 
 Write-Host ""
 Write-Host "🔗 Useful commands:" -ForegroundColor Cyan
-Write-Host "• Uninstall: $uninstallPath" -ForegroundColor Gray
+Write-Host "• Uninstall: $($codexPath)\Scripts\Uninstall-Codex.ps1" -ForegroundColor Gray
 Write-Host "• Reconfigure: $codexPath\Scripts\Install.ps1" -ForegroundColor Gray
 Write-Host "• Icon Reference: $codexPath\ICONS.md" -ForegroundColor Gray
 

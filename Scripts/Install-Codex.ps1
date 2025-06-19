@@ -22,24 +22,8 @@ trap {
     exit 1
 }
 
-# Ensure required parameter values
+# Ensure GitHubRepo
 if (-not $GitHubRepo) { Write-Error "GitHubRepo must be provided"; exit 1 }
-if (-not $InstallPath) {
-    # Choose default path
-    if ($UserInstall -or -not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
-        $InstallPath = "$env:LOCALAPPDATA\Plexus"
-    }
-    else {
-        $InstallPath = "$env:ProgramData\Plexus"
-    }
-}
-
-# Detect if running remotely (no proper script path)
-$isRemoteExecution = $true
-$scriptPath = $null
-
-# For remote execution, we don't need the script path
-# All operations will be based on the target installation directory
 
 # Check if running as administrator
 $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
@@ -48,41 +32,22 @@ Write-Host "=== Plexus Codex One-Click Installer ===" -ForegroundColor Cyan
 Write-Host "🎯 The ultimate Windows context menu system" -ForegroundColor White
 Write-Host ""
 
-# Determine installation path
+# Choose default path
 if (-not $InstallPath) {
-    if ($UserInstall -or -not $isAdmin) {
-        # User install
-        $InstallPath = "$env:LOCALAPPDATA\Plexus\Codex"
-        Write-Host "📁 User installation mode: $InstallPath" -ForegroundColor Cyan
+    if ($UserInstall -or -not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+        $InstallPath = "$env:LOCALAPPDATA\Plexus"
     }
     else {
-        # System-wide install
-        $InstallPath = "$env:ProgramData\Plexus\Codex"
-        Write-Host "📁 System-wide installation: $InstallPath" -ForegroundColor Cyan
+        $InstallPath = "$env:ProgramData\Plexus"
     }
 }
-else {
-    # Custom path provided
-    $InstallPath = $InstallPath.TrimEnd('\')
-    Write-Host "📁 Custom installation path: $InstallPath" -ForegroundColor Cyan
-}
 
-if (-not $isAdmin -and -not $Portable -and -not $UserInstall) {
-    Write-Host "⚠️  Administrator privileges recommended for system-wide installation" -ForegroundColor Yellow
-    Write-Host "   Options:" -ForegroundColor Gray
-    Write-Host "   • Re-run as Administrator (recommended)" -ForegroundColor Gray
-    Write-Host "   • Add -UserInstall for user-only installation" -ForegroundColor Gray
-    Write-Host "   • Add -Portable for no registry changes" -ForegroundColor Gray    $choice = Read-Host "`nContinue with user installation? (Y/N)"
-    if ($choice.ToUpper() -ne "Y") {
-        exit 1
-    }
-    $UserInstall = $true
-    $InstallPath = "$env:LOCALAPPDATA\Plexus\Codex"
-}
+# Final installation folder always ends in 'Codex'
+$codexPath = Join-Path $InstallPath 'Codex'
+Write-Host "📁 Installing to: $codexPath" -ForegroundColor Cyan
 
-# Create installation directory
+# Create installation directory if missing
 Write-Host "📁 Creating installation directory..." -ForegroundColor Green
-$codexPath = $InstallPath
 if (-not (Test-Path $codexPath)) {
     New-Item -ItemType Directory -Path $codexPath -Force | Out-Null
 }

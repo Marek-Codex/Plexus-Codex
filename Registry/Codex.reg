@@ -5,7 +5,6 @@ Windows Registry Editor Version 5.00
 @="Codex"
 "Icon"="%%CODEX_INSTALL_PATH%%\\Icons\\Tinted\\BrandIcon.ico"
 "MUIVerb"="Codex"
-"SubCommands"=""
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell]
 

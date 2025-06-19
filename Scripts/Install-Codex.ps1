@@ -245,10 +245,29 @@ Write-Host "🔧 Configuring installation paths..." -ForegroundColor Cyan
 
 $registryPath = Join-Path $codexPath "Registry\Codex.reg"
 if (Test-Path $registryPath) {
+    # Read and replace placeholder
     $regContent = Get-Content $registryPath -Raw
-    $regContent = $regContent -replace '%%CODEX_INSTALL_PATH%%', $codexPath.Replace('\', '\\')
+    $escapedPath = $codexPath.Replace('\\', '\\\\')
+    $regContent = $regContent -replace '%%CODEX_INSTALL_PATH%%', $escapedPath
+    # Debug: show first few lines to confirm
+    Write-Host "DEBUG: First lines of processed registry content:" -ForegroundColor Magenta
+    $regContent.Split("`n")[0..10] | ForEach-Object { Write-Host $_ -ForegroundColor Magenta }
+
+    # Write back
     Set-Content -Path $registryPath -Value $regContent -Encoding UTF8
     Write-Host "✓ Registry paths updated" -ForegroundColor Green
+
+    # Verify tinted icon exists
+    $brandIcon = Join-Path $codexPath "Icons\Tinted\BrandIcon.ico"
+    if (-not (Test-Path $brandIcon)) {
+        Write-Host "WARNING: BrandIcon.ico not found at $brandIcon" -ForegroundColor Yellow
+    }
+    else {
+        Write-Host "DEBUG: BrandIcon found at $brandIcon" -ForegroundColor Magenta
+    }
+}
+else {
+    Write-Host "ERROR: Registry template not found at $registryPath" -ForegroundColor Red
 }
 
 # Install registry entries

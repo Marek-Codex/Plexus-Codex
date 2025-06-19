@@ -23,19 +23,19 @@ Windows Registry Editor Version 5.00
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\PowerOptions\shell\PowerSaver]
 @="Low Power Mode"
-"Icon"="powercpl.dll,1"
+"Icon"="%%CODEX_INSTALL_PATH%%\\Icons\\Tinted\\PowerSaver.ico"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\PowerOptions\shell\PowerSaver\command]
 @="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%%CODEX_INSTALL_PATH%%\\Scripts\\PowerManager.ps1\" PowerSaver"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\PowerOptions\shell\Balanced]
 @="Balanced Mode"
-"Icon"="powercpl.dll,2"
+"Icon"="%%CODEX_INSTALL_PATH%%\\Icons\\Tinted\\Balanced.ico"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\PowerOptions\shell\Balanced\command]
 @="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%%CODEX_INSTALL_PATH%%\\Scripts\\PowerManager.ps1\" Balanced"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\PowerOptions\shell\HighPerformance]
 @="Max Performance"
-"Icon"="powercpl.dll,3"
+"Icon"="%%CODEX_INSTALL_PATH%%\\Icons\\Tinted\\HighPerformance.ico"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\PowerOptions\shell\HighPerformance\command]
 @="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%%CODEX_INSTALL_PATH%%\\Scripts\\PowerManager.ps1\" HighPerformance"
 
@@ -45,7 +45,7 @@ Windows Registry Editor Version 5.00
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\PowerOptions\shell\GameTurbo]
 @="Combat Mode"
-"Icon"="shell32.dll,15"
+"Icon"="%%CODEX_INSTALL_PATH%%\\Icons\\Tinted\\GameTurbo.ico"
 [HKEY_CLASSES_ROOT\Directory\Background\shell\Codex\shell\PowerOptions\shell\GameTurbo\command]
 @="powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%%CODEX_INSTALL_PATH%%\\Scripts\\GameTurbo.ps1\""
 

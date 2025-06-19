@@ -279,12 +279,22 @@ if (-not $Portable) {
         Write-Host "ERROR: Reg file not found at path: $registryPath" -ForegroundColor Red
     }
     else {
-        Write-Host "DEBUG: Running: regedit.exe /s $registryPath" -ForegroundColor Magenta
         try {
+            Write-Host "DEBUG: Running: regedit.exe /s $registryPath" -ForegroundColor Magenta
             $proc = Start-Process -FilePath regedit.exe -ArgumentList "/s", $registryPath -Wait -PassThru -ErrorAction Stop
             Write-Host "DEBUG: regedit exit code = $($proc.ExitCode)" -ForegroundColor Magenta
             if ($proc.ExitCode -eq 0) {
                 Write-Host "✓ Codex context menu installed!" -ForegroundColor Green
+
+                # Remove any SubCommands value so nested shell items render
+                Write-Host "DEBUG: Removing SubCommands property from root key..." -ForegroundColor Magenta
+                Remove-ItemProperty -Path "HKCR:\Directory\Background\shell\Codex" -Name SubCommands -ErrorAction SilentlyContinue
+
+                # Restart Explorer to refresh context menu
+                Write-Host "🔄 Restarting Explorer to apply new menu entries..." -ForegroundColor Cyan
+                Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue
+                Start-Process explorer
+                Write-Host "✓ Explorer restarted" -ForegroundColor Green
             }
             else {
                 Write-Host "ERROR: regedit returned exit code $($proc.ExitCode)" -ForegroundColor Red

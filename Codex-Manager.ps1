@@ -73,15 +73,15 @@ function Install-Codex {
     try {
         $installerUrl = "$GitHubRepo/Scripts/Install-Codex.ps1" # Changed to new installer
         Write-Host "Downloading installer from: $installerUrl" -ForegroundColor Gray        $installerScript = Invoke-RestMethod -Uri $installerUrl -ErrorAction Stop
-        
+
         # Pass parameters via environment variables (more reliable for downloaded scripts)
         $env:CODEX_GITHUB_REPO = $GitHubRepo
         if ($InstallPath) { $env:CODEX_INSTALL_PATH = $InstallPath }
         if ($UserInstall) { $env:CODEX_USER_INSTALL = "true" }
-        
+
         # Execute installer
         Invoke-Expression $installerScript
-        
+
         # Clean up environment variables
         Remove-Item Env:CODEX_GITHUB_REPO -ErrorAction SilentlyContinue
         Remove-Item Env:CODEX_INSTALL_PATH -ErrorAction SilentlyContinue

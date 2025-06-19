@@ -29,6 +29,12 @@ Write-Host "                    🎯 CODEX 🎯" -ForegroundColor White
 Write-Host "        Advanced Windows Context Menu System" -ForegroundColor Gray
 Write-Host ""
 
+# Start logging to transcript so errors and output are captured even if PowerShell session closes
+Start-Transcript -Path "$env:TEMP\Plexus-Codex-Install.log" -Append -ErrorAction SilentlyContinue
+
+# Start logging all output for debugging
+Start-Transcript -Path "$env:TEMP\Plexus-Codex-Manager.log" -Append -ErrorAction SilentlyContinue
+
 # Function to check if Codex is installed
 function Test-CodexInstalled {
     $registryPaths = @(
@@ -327,3 +333,6 @@ else {
 Write-Host ""
 Write-Host "🎯 CODEX: Where functionality meets cyberpunk aesthetics!" -ForegroundColor Cyan
 Write-Host "⭐ Star the repo: https://github.com/Marek-Codex/Plexus-Codex" -ForegroundColor Gray
+
+# Stop logging transcript
+Stop-Transcript -ErrorAction SilentlyContinue

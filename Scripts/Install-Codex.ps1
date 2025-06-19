@@ -28,25 +28,28 @@ if (-not $GitHubRepo) { Write-Error "GitHubRepo must be provided"; exit 1 }
 # Check if running as administrator
 $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 
+# Title
 Write-Host "=== Plexus Codex One-Click Installer ===" -ForegroundColor Cyan
 Write-Host "🎯 The ultimate Windows context menu system" -ForegroundColor White
 Write-Host ""
 
-# Choose default path
-if (-not $InstallPath) {
-    if ($UserInstall -or -not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
-        $InstallPath = "$env:LOCALAPPDATA\Plexus"
-    }
-    else {
-        $InstallPath = "$env:ProgramData\Plexus"
-    }
+# Compute installation base path and final 'Codex' directory
+if ($InstallPath) {
+    # Custom base provided
+    $basePath = $InstallPath.TrimEnd('\\')
 }
-
-# Final installation folder always ends in 'Codex'
-$codexPath = Join-Path $InstallPath 'Codex'
+elseif ($UserInstall -or -not $isAdmin) {
+    # User-only installation
+    $basePath = "$env:LOCALAPPDATA\Plexus"
+}
+else {
+    # System-wide installation
+    $basePath = "$env:ProgramData\Plexus"
+}
+$codexPath = Join-Path $basePath 'Codex'
 Write-Host "📁 Installing to: $codexPath" -ForegroundColor Cyan
 
-# Create installation directory if missing
+# Create installation directory
 Write-Host "📁 Creating installation directory..." -ForegroundColor Green
 if (-not (Test-Path $codexPath)) {
     New-Item -ItemType Directory -Path $codexPath -Force | Out-Null

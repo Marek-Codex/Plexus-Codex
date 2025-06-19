@@ -83,21 +83,18 @@ function Install-Codex {
         $tempInstaller = Join-Path $env:TEMP "Install-Codex.ps1"
         Invoke-RestMethod -Uri $installerUrl -OutFile $tempInstaller -UseBasicParsing -ErrorAction Stop
 
-        # Build argument list for fresh PS process
-        $argList = @(
-            '-NoProfile',
-            '-ExecutionPolicy', 'Bypass',
-            '-File', $tempInstaller,
-            '-GitHubRepo', $GitHubRepo
-        )
-        if ($InstallPath) { $argList += '-InstallPath'; $argList += $InstallPath }
-        if ($UserInstall) { $argList += '-UserInstall' }
+        # Build a PowerShell -Command invocation to ensure named parameters bind
+        $psCmd = "& '$tempInstaller' -GitHubRepo '$GitHubRepo'"
+        if ($InstallPath) { $escaped = $InstallPath.Replace("'", "`'"); $psCmd += " -InstallPath '$escaped'" }
+        if ($UserInstall) { $psCmd += ' -UserInstall' }
+        Write-Host "DEBUG: pwsh -NoProfile -ExecutionPolicy Bypass -Command $psCmd" -ForegroundColor Magenta
 
-        Write-Host "DEBUG: Launching installer via pwsh.exe with args: $($argList -join ' ')" -ForegroundColor Magenta
-        $proc = Start-Process -FilePath 'pwsh.exe' -ArgumentList $argList -Wait -NoNewWindow -PassThru -ErrorAction Stop
+        $proc = Start-Process -FilePath 'pwsh.exe' -ArgumentList @(
+            '-NoProfile', '', '-ExecutionPolicy', 'Bypass', '-Command', $psCmd
+        ) -Wait -NoNewWindow -PassThru -ErrorAction Stop
         Write-Host "DEBUG: Installer exit code: $($proc.ExitCode)" -ForegroundColor Magenta
 
-        # Clean up temp file
+        # Clean up temp installer
         Remove-Item -Path $tempInstaller -Force -ErrorAction SilentlyContinue
 
         Write-Host ""

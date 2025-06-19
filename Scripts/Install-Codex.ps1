@@ -9,12 +9,16 @@ param(
     [string]$GitHubRepo = "https://raw.githubusercontent.com/Marek-Codex/Plexus-Codex/main"
 )
 
+# Start transcript for install debugging
+Start-Transcript -Path "$env:TEMP\Plexus-Codex-Install.log" -Append -ErrorAction SilentlyContinue
+
 # Ensure errors stop and are caught by trap
 $ErrorActionPreference = 'Stop'
 trap {
     Write-Host "❌ Unexpected error: $($_.Exception.Message)" -ForegroundColor Red
     Write-Host $_.Exception.StackTrace -ForegroundColor Red
     Read-Host "Press Enter to exit"
+    Stop-Transcript -ErrorAction SilentlyContinue
     exit 1
 }
 
@@ -44,25 +48,22 @@ Write-Host "=== Plexus Codex One-Click Installer ===" -ForegroundColor Cyan
 Write-Host "🎯 The ultimate Windows context menu system" -ForegroundColor White
 Write-Host ""
 
-# Determine best installation path
+# Determine installation path
 if (-not $InstallPath) {
     if ($UserInstall -or -not $isAdmin) {
-        # User-specific installation
-        $InstallPath = "$env:LOCALAPPDATA\Plexus"
-        Write-Host "📁 User installation mode: $InstallPath\Codex" -ForegroundColor Cyan
+        # User install
+        $InstallPath = "$env:LOCALAPPDATA\Plexus\Codex"
+        Write-Host "📁 User installation mode: $InstallPath" -ForegroundColor Cyan
+    } else {
+        # System-wide install
+        $InstallPath = "$env:ProgramData\Plexus\Codex"
+        Write-Host "📁 System-wide installation: $InstallPath" -ForegroundColor Cyan
     }
-    else {
-        # System-wide installation (preferred)
-        $InstallPath = "$env:ProgramData\Plexus"
-        Write-Host "📁 System-wide installation: $InstallPath\Codex" -ForegroundColor Cyan
-    }
-}
-else {
-    # Custom installation path provided
+} else {
+    # Custom path provided
     $InstallPath = $InstallPath.TrimEnd('\')
-    Write-Host "📁 Custom installation path: $InstallPath\Codex" -ForegroundColor Cyan
+    Write-Host "📁 Custom installation path: $InstallPath" -ForegroundColor Cyan
 }
-
 
 if (-not $isAdmin -and -not $Portable -and -not $UserInstall) {
     Write-Host "⚠️  Administrator privileges recommended for system-wide installation" -ForegroundColor Yellow
@@ -74,12 +75,12 @@ if (-not $isAdmin -and -not $Portable -and -not $UserInstall) {
         exit 1
     }
     $UserInstall = $true
-    $InstallPath = "$env:LOCALAPPDATA\Plexus"
+    $InstallPath = "$env:LOCALAPPDATA\Plexus\Codex"
 }
 
 # Create installation directory
 Write-Host "📁 Creating installation directory..." -ForegroundColor Green
-$codexPath = Join-Path $InstallPath "Codex"
+$codexPath = $InstallPath
 if (-not (Test-Path $codexPath)) {
     New-Item -ItemType Directory -Path $codexPath -Force | Out-Null
 }
@@ -324,3 +325,6 @@ Write-Host "• Icon Reference: $codexPath\ICONS.md" -ForegroundColor Gray
 
 Write-Host ""
 Write-Host "🎯 CODEX: Where functionality meets cyberpunk aesthetics!" -ForegroundColor Cyan
+
+# Stop transcript
+Stop-Transcript -ErrorAction SilentlyContinue

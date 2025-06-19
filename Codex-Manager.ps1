@@ -83,22 +83,29 @@ function Install-Codex {
         $tempInstaller = Join-Path $env:TEMP "Install-Codex.ps1"
         Invoke-RestMethod -Uri $installerUrl -OutFile $tempInstaller -UseBasicParsing -ErrorAction Stop
 
-        # Prepare arguments
-        $invokeArgs = @("-GitHubRepo", $GitHubRepo)
-        if ($InstallPath) { $invokeArgs += "-InstallPath"; $invokeArgs += $InstallPath }
-        if ($UserInstall) { $invokeArgs += "-UserInstall" }
+        # Build argument list for fresh PS process
+        $argList = @(
+            '-NoProfile',
+            '-ExecutionPolicy', 'Bypass',
+            '-File', $tempInstaller,
+            '-GitHubRepo', $GitHubRepo
+        )
+        if ($InstallPath) { $argList += '-InstallPath'; $argList += $InstallPath }
+        if ($UserInstall) { $argList += '-UserInstall' }
 
-        # Execute installer with named parameters
-        & $tempInstaller @invokeArgs
+        Write-Host "DEBUG: Launching installer via pwsh.exe with args: $($argList -join ' ')" -ForegroundColor Magenta
+        $proc = Start-Process -FilePath 'pwsh.exe' -ArgumentList $argList -Wait -NoNewWindow -PassThru -ErrorAction Stop
+        Write-Host "DEBUG: Installer exit code: $($proc.ExitCode)" -ForegroundColor Magenta
 
-        # Clean up
+        # Clean up temp file
         Remove-Item -Path $tempInstaller -Force -ErrorAction SilentlyContinue
 
         Write-Host ""
         Write-Host "✅ Codex installation completed!" -ForegroundColor Green
         Write-Host "Right-click on your desktop to access the Codex menu." -ForegroundColor Gray
 
-    } catch {
+    }
+    catch {
         Write-Host "❌ Installation failed: $($_.Exception.Message)" -ForegroundColor Red
         Write-Host $_.Exception.StackTrace -ForegroundColor Red
         Read-Host "Press Enter to exit."

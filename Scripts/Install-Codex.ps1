@@ -54,12 +54,14 @@ if (-not $InstallPath) {
         # User install
         $InstallPath = "$env:LOCALAPPDATA\Plexus\Codex"
         Write-Host "📁 User installation mode: $InstallPath" -ForegroundColor Cyan
-    } else {
+    }
+    else {
         # System-wide install
         $InstallPath = "$env:ProgramData\Plexus\Codex"
         Write-Host "📁 System-wide installation: $InstallPath" -ForegroundColor Cyan
     }
-} else {
+}
+else {
     # Custom path provided
     $InstallPath = $InstallPath.TrimEnd('\')
     Write-Host "📁 Custom installation path: $InstallPath" -ForegroundColor Cyan
@@ -288,19 +290,22 @@ if (-not $Portable) {
     Write-Host "DEBUG: registryPath = '$registryPath'" -ForegroundColor Magenta
     if (-not (Test-Path $registryPath)) {
         Write-Host "ERROR: Reg file not found at path: $registryPath" -ForegroundColor Red
-    } else {
+    }
+    else {
         Write-Host "DEBUG: Running: regedit.exe /s $registryPath" -ForegroundColor Magenta
         try {
             $proc = Start-Process -FilePath regedit.exe -ArgumentList "/s", $registryPath -Wait -PassThru -ErrorAction Stop
             Write-Host "DEBUG: regedit exit code = $($proc.ExitCode)" -ForegroundColor Magenta
             if ($proc.ExitCode -eq 0) {
                 Write-Host "✓ Codex context menu installed!" -ForegroundColor Green
-            } else {
+            }
+            else {
                 Write-Host "ERROR: regedit returned exit code $($proc.ExitCode)" -ForegroundColor Red
                 Write-Host "⚠️  Registry installation may have failed. Run Install.ps1 manually as Administrator." -ForegroundColor Yellow
                 Read-Host "Press Enter to continue"
             }
-        } catch {
+        }
+        catch {
             Write-Host "⚠️  Exception running regedit: $($_.Exception.Message)" -ForegroundColor Red
             Read-Host "Press Enter to continue"
         }
